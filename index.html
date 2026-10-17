@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dadu.fun - 30 Best Games</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+        body { background:#0d0e12; color:#fff; padding:20px; text-align:center; }
+        header { margin:30px 0; }
+        header h1 { font-size:3.5rem; color:#00ffcc; text-shadow:0 0 15px rgba(0,255,204,0.4); }
+        #searchBar { width:100%; max-width:500px; padding:12px 20px; font-size:1rem; border:2px solid #222530; border-radius:30px; background:#161822; color:#fff; outline:none; margin-bottom:20px; }
+        #searchBar:focus { border-color:#00ffcc; }
+        .filters { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:40px; }
+        .filter-btn { background:#161822; color:#8a8d98; border:1px solid #222530; padding:8px 18px; border-radius:20px; cursor:pointer; font-weight:500; }
+        .filter-btn.active, .filter-btn:hover { background:#00ffcc; color:#0d0e12; font-weight:bold; }
+        .game-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:25px; max-width:1200px; margin:0 auto; }
+        .game-card { background:#161822; border-radius:16px; overflow:hidden; border:1px solid #222530; cursor:pointer; transition:0.3s; padding-bottom:15px; }
+        .game-card:hover { transform:translateY(-5px); border-color:#00ffcc; box-shadow:0 10px 20px rgba(0,255,204,0.2); }
+        .game-thumb { width:100%; height:130px; background:linear-gradient(135deg, #1f2335, #161822); display:flex; align-items:center; justify-content:center; font-size:3.5rem; }
+        .game-card h3 { margin:12px; font-size:1.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .game-card p { color:#626678; font-size:0.8rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dadu.fun</h1>
+        <p>30 सबसे बेस्ट मिनी गेम्स और टूल्स की दुनिया</p>
+    </header>
+    <input type="text" id="searchBar" placeholder="अपना पसंदीदा गेम खोजें...">
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterGames('all')">All Games</button>
+        <button class="filter-btn" onclick="filterGames('tools')">Tools</button>
+        <button class="filter-btn" onclick="filterGames('puzzle')">Puzzle</button>
+        <button class="filter-btn" onclick="filterGames('arcade')">Arcade</button>
+    </div>
+    <div class="game-grid" id="gameGrid"></div>
+    <script>
+        const gamesData = [
+            { id: 1, title: "Spend Bill Gates Money", category: "tools", emoji: "💰", url: "https://neal.fun" },
+            { id: 2, title: "The Password Game", category: "puzzle", emoji: "🔑", url: "https://neal.fun" },
+            { id: 3, title: "Infinite Craft Mixer", category: "tools", emoji: "🧱", url: "https://neal.fun" },
+            { id: 4, title: "Asteroid Launcher", category: "tools", emoji: "☄️", url: "https://neal.fun" },
+            { id: 5, title: "Draw Your Island", category: "tools", emoji: "🏝️", url: "https://neal.fun" },
+            { id: 6, title: "Space Elevator", category: "tools", emoji: "🚀", url: "https://neal.fun" },
+            { id: 7, title: "The Deep Sea", category: "tools", emoji: "🐋", url: "https://neal.fun" },
+            { id: 8, title: "Size of Space", category: "tools", emoji: "🌌", url: "https://neal.fun" },
+            { id: 9, title: "Printing Money", category: "tools", emoji: "💵", url: "https://neal.fun" },
+            { id: 10, title: "Quick Draw AI", category: "tools", emoji: "✏️", url: "https://withgoogle.com" },
+            { id: 11, title: "Classic 2048", category: "puzzle", emoji: "🧩", url: "https://play2048.co" },
+            { id: 12, title: "Sudoku Grid", category: "puzzle", emoji: "🔢", url: "https://sudoku.com" },
+            { id: 13, title: "Wordle Daily", category: "puzzle", emoji: "📝", url: "https://nytimes.com" },
+            { id: 14, title: "Minesweeper", category: "puzzle", emoji: "💣", url: "https://minesweeperonline.com" },
+            { id: 15, title: "Rubik's Cube 3D", category: "puzzle", emoji: "🟥", url: "https://ruwix.com" },
+            { id: 16, title: "Chess vs AI", category: "puzzle", emoji: "♟️", url: "https://chess.com" },
+            { id: 17, title: "Tic Tac Toe", category: "puzzle", emoji: "❌", url: "https://playtictactoe.org" },
+            { id: 18, title: "Cut the Rope", category: "puzzle", emoji: "🐸", url: "https://gamedistribution.com" },
+            { id: 19, title: "Where is My Water?", category: "puzzle", emoji: "🐊", url: "https://gamedistribution.com" },
+            { id: 20, title: "Tetris Blocks", category: "puzzle", emoji: "📐", url: "https://gamedistribution.com" },
+            { id: 21, title: "Google Snake", category: "arcade", emoji: "🐍", url: "https://playsnake.org" },
+            { id: 22, title: "Pac-Man Retro", category: "arcade", emoji: "🕹️", url: "https://freejelly.com" },
+            { id: 23, title: "Flappy Bird HD", category: "arcade", emoji: "🐦", url: "https://flappybird.io" },
+            { id: 24, title: "Dino T-Rex", category: "arcade", emoji: "🦖", url: "https://chromedino.com" },
+            { id: 25, title: "Fruit Ninja", category: "arcade", emoji: "🍉", url: "https://gamedistribution.com" },
+            { id: 26, title: "Subway Surfers", category: "arcade", emoji: "🏃", url: "https://gamedistribution.com" },
+            { id: 27, title: "Moto X3M Bike", category: "arcade", emoji: "🏍️", url: "https://gamedistribution.com" },
+            { id: 28, title: "Helix Jump", category: "arcade", emoji: "💈", url: "https://gamedistribution.com" },
+            { id: 29, title: "Slither.io Arena", category: "arcade", emoji: "🐛", url: "https://gamedistribution.com" },
+            { id: 30, title: "Geometry Dash", category: "arcade", emoji: "🔺", url: "https://gamedistribution.com" }
+        ];
+        const grid = document.getElementById('gameGrid');
+        const search = document.getElementById('searchBar');
+        function show(list) {
+            grid.innerHTML = list.length ? "" : "<p style='grid-column:1/-1;'>कोई गेम नहीं मिला!</p>";
+            list.forEach(g => {
+                const div = document.createElement('div');
+                div.className = 'game-card';
+                div.onclick = () => window.open(g.url, '_blank');
+                div.innerHTML = `<div class="game-thumb">${g.emoji}</div><h3>${g.title}</h3><p>${g.category.toUpperCase()}</p>`;
+                grid.appendChild(div);
+            });
+        }
+        search.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            show(gamesData.filter(g => g.title.toLowerCase().includes(val)));
+        });
+        function filterGames(cat) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            show(cat === 'all' ? gamesData : gamesData.filter(g => g.category === cat));
+        }
+        show(gamesData);
+    </script>
+</body>
+</html>
