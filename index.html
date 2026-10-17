@@ -1,0 +1,417 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BrainZone 100 - Mind Games</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #101426;
+    color: white;
+}
+
+header {
+    background: #191f38;
+    padding: 20px 12px;
+    text-align: center;
+    border-bottom: 2px solid #655cff;
+}
+
+header h1 {
+    color: #8d85ff;
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    color: #c6c9df;
+}
+
+.search {
+    display: block;
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 14px;
+    border-radius: 25px;
+    border: 1px solid #655cff;
+    font-size: 16px;
+    background: #202744;
+    color: white;
+}
+
+.categories {
+    text-align: center;
+    padding: 5px;
+}
+
+.categories button {
+    background: #292f4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 4px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.categories button:hover {
+    background: #655cff;
+}
+
+h2 {
+    padding-left: 15px;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+}
+
+.card {
+    background: #1d2542;
+    border-radius: 15px;
+    padding: 18px 8px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #30395d;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    background: #30375e;
+}
+
+.icon {
+    font-size: 42px;
+}
+
+.card h3 {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.card p {
+    color: #b7bfdf;
+    font-size: 12px;
+}
+
+.play {
+    background: #655cff;
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 10px;
+    color: #aab0ce;
+}
+
+#gameArea {
+    display: none;
+    margin: 15px;
+    padding: 20px;
+    text-align: center;
+    background: #1d2542;
+    border-radius: 15px;
+}
+
+#gameArea button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+@media (min-width: 650px) {
+    .games {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1000px) {
+    .games {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🧠 BrainZone 100</h1>
+    <p>Play • Think • Challenge Your Brain!</p>
+</header>
+
+<input
+    class="search"
+    id="search"
+    type="search"
+    placeholder="🔍 Search your favourite game..."
+>
+
+<div class="categories">
+    <button onclick="filterGames('All')">All Games</button>
+    <button onclick="filterGames('Puzzle')">🧩 Puzzle</button>
+    <button onclick="filterGames('Memory')">🧠 Memory</button>
+    <button onclick="filterGames('Math')">🔢 Math</button>
+    <button onclick="filterGames('Fun')">🎯 Fun</button>
+</div>
+
+<h2>🔥 Popular Mind Games</h2>
+
+<div id="gameArea">
+    <h2 id="gameTitle"></h2>
+    <div id="gameContent"></div>
+    <br>
+    <button onclick="closeGame()">⬅ Back to Games</button>
+</div>
+
+<div class="games" id="games"></div>
+
+<footer>
+    <h3>🧠 BrainZone 100</h3>
+    <p>Train Your Brain Every Day!</p>
+    <p>Made for curious minds ❤️</p>
+</footer>
+
+<script>
+const names = [
+"Memory Challenge", "Number Puzzle", "Brain Teaser",
+"Quick Math", "Color Match", "Word Puzzle",
+"Emoji Quiz", "Pattern Finder", "Odd One Out",
+"Number Memory", "Tile Puzzle", "Word Scramble",
+"Logic Master", "Math Challenge", "Shape Match",
+"Sequence Solver", "Missing Number", "Riddle Time",
+"Picture Memory", "Fast Counting", "Symbol Match",
+"Word Hunt", "Mini Sudoku", "Brain Trainer",
+"Color Memory", "Math Sprint", "Letter Puzzle",
+"Find the Pattern", "Logic Quiz", "Number Rush",
+"Shadow Match", "Quick Thinking", "Memory Tiles",
+"Word Builder", "Shape Puzzle", "Brain Test",
+"Math Master", "Guess the Word", "Emoji Match",
+"Hidden Number", "Visual Memory", "Puzzle Box",
+"Smart Riddles", "Number Grid", "Color Challenge",
+"Word Connect", "Sequence Game", "Logic Blocks",
+"Quick Quiz", "Mind Bender", "Memory Cards",
+"Addition Race", "Subtraction Star", "Multiplication Pro",
+"Division Challenge", "Alphabet Quiz", "Spelling Bee",
+"Animal Quiz", "Science Quiz", "Geography Quiz",
+"Flag Challenge", "Capital Cities", "True or False",
+"Who Am I?", "Guess the Animal", "Shape Sorter",
+"Light Puzzle", "Maze Runner", "Path Finder",
+"Block Puzzle", "Jigsaw Mini", "Dot Connect",
+"Line Puzzle", "Match Three", "Bubble Pop",
+"Target Tap", "Reaction Test", "Speed Click",
+"Focus Test", "Catch the Star", "Tap Challenge",
+"Remember the Order", "Sequence Memory", "Flash Numbers",
+"Quick Decisions", "Brain Workout", "Smart Choices",
+"Daily Riddle", "Word Ladder", "Letter Match",
+"Math Mania", "Puzzle Adventure", "Mystery Box",
+"Secret Code", "Code Breaker", "Number Detective",
+"Final Brain Test", "Super Memory", "Genius Challenge"
+];
+
+const icons = [
+"🧠","🔢","🧩","➕","🎨","🔤","😀","🔷","👀","🔢",
+"🧩","📝","💡","➗","🔶","🔢","❓","🤔","🖼️","🔟"
+];
+
+const categories = [
+"Memory","Math","Puzzle","Math","Fun","Puzzle","Fun",
+"Puzzle","Fun","Memory"
+];
+
+const games = document.getElementById("games");
+const search = document.getElementById("search");
+
+names.forEach((name, i) => {
+    let category = categories[i % categories.length];
+
+    if (i >= 50 && i < 65) category = "Fun";
+    if (i >= 80 && i < 90) category = "Memory";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.category = category;
+    card.dataset.name = name.toLowerCase();
+
+    card.innerHTML = `
+        <div class="icon">${icons[i % icons.length]}</div>
+        <h3>${i + 1}. ${name}</h3>
+        <p>${category} Game</p>
+        <button class="play">▶ Play</button>
+    `;
+
+    card.onclick = () => openGame(name, i);
+
+    games.appendChild(card);
+});
+
+function filterGames(category) {
+    document.querySelectorAll(".card").forEach(card => {
+        card.style.display =
+            category === "All" ||
+            card.dataset.category === category
+            ? "" : "none";
+    });
+}
+
+search.addEventListener("input", function() {
+    const query = this.value.toLowerCase();
+
+    document.querySelectorAll(".card").forEach(card => {
+        card.style.display =
+            card.dataset.name.includes(query) ? "" : "none";
+    });
+});
+
+function openGame(name, index) {
+    const area = document.getElementById("gameArea");
+    const title = document.getElementById("gameTitle");
+    const content = document.getElementById("gameContent");
+
+    title.textContent = name;
+    area.style.display = "block";
+    content.innerHTML = "";
+
+    if (index === 0 || index === 9 || index === 32 ||
+        index === 50 || index === 79 || index === 81 ||
+        index === 94 || index === 95) {
+        startMemoryGame(content);
+    } else if (index === 1 || index === 3 || index === 13 ||
+               index === 25 || (index >= 50 && index <= 53) ||
+               index === 90) {
+        startMathGame(content);
+    } else if (index === 2 || index === 17 || index === 42 ||
+               index === 49 || index === 86 || index === 97) {
+        startRiddle(content);
+    } else {
+        content.innerHTML = `
+            <p>Ready for a brain challenge?</p>
+            <p>Choose the correct answer!</p>
+            <button onclick="simpleQuiz(this, true)">🧠 Think</button>
+            <button onclick="simpleQuiz(this, false)">🎯 Challenge</button>
+            <p class="result"></p>
+        `;
+    }
+
+    area.scrollIntoView({behavior:"smooth"});
+}
+
+function startMemoryGame(content) {
+    const number = Math.floor(1000 + Math.random() * 9000);
+
+    content.innerHTML = `
+        <p>Remember this number!</p>
+        <h1 id="memoryNumber">${number}</h1>
+        <p id="memoryMessage">Look carefully for 3 seconds.</p>
+        <button onclick="showMemoryInput(${number})">I'm Ready!</button>
+        <div id="memoryInput"></div>
+    `;
+
+    setTimeout(() => {
+        const n = document.getElementById("memoryNumber");
+        if (n) n.textContent = "????";
+    }, 3000);
+}
+
+function showMemoryInput(number) {
+    document.getElementById("memoryInput").innerHTML = `
+        <input id="memoryAnswer" placeholder="Enter the number">
+        <button onclick="checkMemory(${number})">Check</button>
+        <p id="memoryResult"></p>
+    `;
+}
+
+function checkMemory(number) {
+    const answer = document.getElementById("memoryAnswer").value;
+    document.getElementById("memoryResult").textContent =
+        answer === String(number)
+        ? "🎉 Correct! Great memory!"
+        : "😊 Not quite! Try another round.";
+}
+
+function startMathGame(content) {
+    const a = Math.floor(Math.random() * 20) + 1;
+    const b = Math.floor(Math.random() * 20) + 1;
+    const answer = a + b;
+
+    content.innerHTML = `
+        <h3>${a} + ${b} = ?</h3>
+        <input id="mathAnswer" type="number" placeholder="Your answer">
+        <button onclick="checkMath(${answer})">Submit</button>
+        <p id="mathResult"></p>
+    `;
+}
+
+function checkMath(answer) {
+    const value = document.getElementById("mathAnswer").value;
+
+    document.getElementById("mathResult").textContent =
+        value !== "" && Number(value) === answer
+        ? "🎉 Correct answer!"
+        : "❌ Try again!";
+}
+
+function startRiddle(content) {
+    const riddles = [
+        {q:"What has hands but cannot clap?", a:"clock"},
+        {q:"What gets wetter as it dries?", a:"towel"},
+        {q:"What has keys but no locks?", a:"piano"},
+        {q:"What has a face but no eyes?", a:"clock"},
+        {q:"What goes up but never comes down?", a:"age"}
+    ];
+
+    const r = riddles[Math.floor(Math.random() * riddles.length)];
+
+    content.innerHTML = `
+        <h3>${r.q}</h3>
+        <input id="riddleAnswer" placeholder="Your answer">
+        <button onclick="checkRiddle('${r.a}')">Submit</button>
+        <p id="riddleResult"></p>
+    `;
+}
+
+function checkRiddle(answer) {
+    const value = document.getElementById("riddleAnswer")
+        .value.trim().toLowerCase();
+
+    document.getElementById("riddleResult").textContent =
+        value === answer
+        ? "🎉 Correct! You are smart!"
+        : "❌ Not correct. Try again!";
+}
+
+function simpleQuiz(button, choice) {
+    const result = button.parentElement.querySelector(".result");
+    result.textContent = choice
+        ? "🎉 Great! Keep challenging your brain!"
+        : "💪 Keep trying and improve your skills!";
+}
+
+function closeGame() {
+    document.getElementById("gameArea").style.display = "none";
+    games.scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+</body>
+</html>
